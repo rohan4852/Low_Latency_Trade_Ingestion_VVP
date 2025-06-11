@@ -1,0 +1,10 @@
+{
+    "methods": [
+        "Lock-based",
+        "Lock-free"
+    ],
+    "throughput": [
+        800000,
+        1200000
+    ]
+}

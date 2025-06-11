@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trade Ingestion Benchmark Dashboard</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <h1>Trade Ingestion Benchmark Dashboard</h1>
+
+    <section>
+        <h2>Latency Over Time (p50, p90, p99)</h2>
+        <canvas id="latencyChart" width="800" height="400"></canvas>
+    </section>
+
+    <section>
+        <h2>Throughput Comparison (Lock-based vs Lock-free)</h2>
+        <canvas id="throughputChart" width="800" height="400"></canvas>
+    </section>
+
+    <script>
+        async function fetchJson(path) {
+            const response = await fetch(path);
+            return await response.json();
+        }
+
+        async function renderLatencyChart() {
+            const data = await fetchJson('/api/latency');
+            const ctx = document.getElementById('latencyChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.timestamps,
+                    datasets: [
+                        {
+                            label: 'p50 Latency (μs)',
+                            data: data.p50,
+                            borderColor: 'blue',
+                            fill: false,
+                            tension: 0.1,
+                        },
+                        {
+                            label: 'p90 Latency (μs)',
+                            data: data.p90,
+                            borderColor: 'orange',
+                            fill: false,
+                            tension: 0.1,
+                        },
+                        {
+                            label: 'p99 Latency (μs)',
+                            data: data.p99,
+                            borderColor: 'red',
+                            fill: false,
+                            tension: 0.1,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time',
+                            },
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Latency (μs)',
+                            },
+                            beginAtZero: true,
+                        },
+                    },
+                },
+            });
+        }
+
+        async function renderThroughputChart() {
+            const data = await fetchJson('/api/throughput');
+            const ctx = document.getElementById('throughputChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.methods,
+                    datasets: [
+                        {
+                            label: 'Throughput (msgs/sec)',
+                            data: data.throughput,
+                            backgroundColor: ['#4e79a7', '#f28e2b'],
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Messages per Second',
+                            },
+                        },
+                    },
+                },
+            });
+        }
+
+        renderLatencyChart();
+        renderThroughputChart();
+    </script>
+</body>
+
+</html>

@@ -23,6 +23,15 @@ This VVP explores an optimized ingestion design using:
 | Lock-based    | 190μs       | 800K msgs/sec  |
 | Lock-free     | 45μs        | 1.2M msgs/sec  |
 
+## 📊 Live Demo Dashboard
+
+Explore the benchmark results visually with our interactive web-based dashboard:
+
+- **Latency Over Time**: View p50, p90, and p99 latency trends.
+- **Throughput Comparison**: Compare lock-based vs lock-free throughput.
+
+To access the dashboard, run the Spring Boot application and open [http://localhost:8080/dashboard](http://localhost:8080/dashboard) in your browser.
+
 ## 🧱 Architecture
 
 - Java 17, Docker, JMH
