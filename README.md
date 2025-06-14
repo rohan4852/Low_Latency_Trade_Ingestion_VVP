@@ -1,61 +1,72 @@
+# Low-Latency Trade Ingestion Prototype
 
-# ⚡ Low Latency Trade Ingestion – VVP Prototype for Tower Research Capital
+### 🛠️ Author: Rohan Adat  
 
-A Value Validation Project (VVP) targeting the real-world challenge of reducing ingestion latency in high-frequency trading systems.
+## 📌 Overview
 
-## 🧠 Problem
+This project is a performance-focused prototype simulating a real-time trade ingestion engine. It explores how concurrency patterns, JVM tuning, and lock-free design can dramatically reduce latency and maximize throughput in ingestion pipelines.
 
-In HFT environments, trade ingestion pipelines are often bottlenecked by lock contention and cache misses. This leads to unacceptable latency spikes (p99 > 100μs).
+The system was built to model the kind of high-pressure ingestion logic often found in real-time financial infrastructure, where low-latency execution and predictable performance are critical.
 
-## 💡 Solution
 
-This VVP explores an optimized ingestion design using:
-- Lock-free ring buffers (Disruptor pattern)
-- Memory-mapped I/O
-- JVM tuning
-- CPU affinity pinning
-- Low GC pressure techniques
+## 🚀 Key Features
 
-## 📈 Benchmark Results
+- Lock-based and Lock-free ingestion pipelines (BlockingQueue vs LMAX Disruptor)  
+- JVM tuning for GC and thread pinning  
+- Throughput simulation: 6M+ messages/sec  
+- Benchmarking with JMH and custom metrics  
+- Modular Java backend using concurrency primitives  
 
-| Method        | p99 Latency | Throughput     |
-|---------------|-------------|----------------|
-| Lock-based    | 190μs       | 800K msgs/sec  |
-| Lock-free     | 45μs        | 1.2M msgs/sec  |
 
-## 📊 Live Demo Dashboard
+## 📊 Performance Metrics
 
-Explore the benchmark results visually with our interactive web-based dashboard:
+| Ingestion Model     | p99 Latency | Throughput Gain |
+|---------------------|-------------|------------------|
+| Lock-Based Queue    | ~190μs      | Baseline         |
+| Lock-Free Pipeline  | ~45μs       | +30–50%          |
 
-- **Latency Over Time**: View p50, p90, and p99 latency trends.
-- **Throughput Comparison**: Compare lock-based vs lock-free throughput.
+- Garbage-free execution path using off-heap buffers  
+- Reduced jitter and lock contention using thread affinity  
 
-To access the dashboard, run the Spring Boot application and open [http://localhost:8080/dashboard](http://localhost:8080/dashboard) in your browser.
 
-## 🧱 Architecture
+## 🧪 Benchmarking Stack
 
-- Java 17, Docker, JMH
-- RingBuffer-based ingestion
-- Custom dispatcher threads
-- Affinity + low-latency GC options
+- Java 17 (JMH, Unsafe, Executors)  
+- Spring Boot (for base module architecture)  
+- CSV output for latency metrics  
+- Flamegraphs via async-profiler (optional)
 
-## 📂 Directory Structure
 
-```
-/src
-  └── trade-ingestion
-       ├── RingBufferIngestion.java
-       ├── BenchmarkTest.java
-       └── ...
-```
+## 🧱 Project Structure
 
-## 👨‍💻 Author
+/src/main/java/com/vvp/ingestion/
+├── LockBasedIngestion.java
+├── LockFreeIngestion.java
+├── BenchmarkRunner.java
 
-**Rohan Adat**  
-[LinkedIn](https://linkedin.com/in/roh...adatat) | roh...@gmail.com
+/benchmarks/
+└── latency_results.csv
 
----
+/docs/
+├── architecture.png
+├── benchmarks.pdf
 
-## 🚀 Interested?
 
-This repo is part of my Value Validation Project to solve relevant system challenges for companies like Tower Research Capital. If this resonates with your team, I’d love to collaborate or go deeper into implementation.
+## 🖥️ Run the Benchmarks
+
+```bash
+git clone https://github.com/rohan4852/Low_Latency_Trade_Ingestion_VVP.git
+cd Low_Latency_Trade_Ingestion_VVP
+mvn clean package
+java -jar target/benchmark.jar
+
+ What This Demonstrates
+This project demonstrates how low-level systems tuning — including lock-free queues, GC-awareness, thread pinning, and flamegraph analysis — can lead to massive latency reduction in high-frequency ingestion pipelines.
+
+It is relevant to real-time systems where ingestion and dispatch happen under load, including financial applications, stream processors, and time-critical distributed platforms.
+
+
+🙌 Acknowledgements
+Built as part of a self-directed validation project for high-performance backend engineering roles. All feedback welcome.
+
+© 2025 Rohan Adat
